@@ -314,4 +314,37 @@ public class TestPro {
     // B - A
     // 1        50
     // 1 75
+    
+     /**
+     *
+     * @param treeMap
+     * @param nearNum 需要接近的值
+     */
+    public static void caclNearNum(Map<BigDecimal, List<String>> treeMap, BigDecimal nearNum) {
+
+        BigDecimal firstNum = (BigDecimal) (treeMap.keySet()).toArray()[0];
+
+        // 差值实始化
+        BigDecimal diffNum = firstNum.subtract(nearNum).abs();
+        // 最终结果
+        BigDecimal result = null;
+        List<String> matchId = new ArrayList<>();
+        for (Map.Entry<BigDecimal, List<String>> entry : treeMap.entrySet()) {
+            BigDecimal diffNumTemp = entry.getKey().subtract(nearNum).abs();
+            if (diffNumTemp.compareTo(diffNum) == -1) {
+                diffNum = diffNumTemp;
+                result = entry.getKey();
+                matchId = entry.getValue();
+            }
+        }
+
+        if (result == null) {
+            result = firstNum;
+            matchId = treeMap.get(result);
+        }
+
+        System.out.println(result.toString() + " id " + matchId.get(0));
+
+    }
+    
 }
