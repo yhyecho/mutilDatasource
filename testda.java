@@ -1,202 +1,266 @@
-package com.kpmg;
+package com.yhyecho.demo;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 /**
- * @author Echo
- * @create 2018-05-24
- * @desc
+ * Created by Echo on 5/26/18.
  */
-public class TestPro {
-    //int a = bigdemical.compareTo(bigdemical2)
-    //a = -1,表示bigdemical小于bigdemical2；
-    //a = 0,表示bigdemical等于bigdemical2；
-    //a = 1,表示bigdemical大于bigdemical2；
+public class TestPro2 {
+    public static void main(String[] args) {
+        List<Person> ourList = new ArrayList<>();
+        Person person1 = new Person("1", new BigDecimal("100.00"));
+        Person person2 = new Person("2", new BigDecimal("80.00"));
+        Person person3 = new Person("3", new BigDecimal("87.00"));
+        Person person4 = new Person("4", new BigDecimal("60.00"));
 
-//    public static void main(String[] args) {
-//        List<Person> ourList = new ArrayList<>();
-//        Person person1 = new Person("1", new BigDecimal("120"));
-//        Person person2 = new Person("2", new BigDecimal("110"));
-//        Person person3 = new Person("3", new BigDecimal("60"));
-//        Person person4 = new Person("4", new BigDecimal("50"));
-//        Person person5 = new Person("5", new BigDecimal("10"));
-//
-//        ourList.add(person1);
-//        ourList.add(person2);
-//        ourList.add(person3);
-//        ourList.add(person4);
-//        ourList.add(person5);
-//
-//        List<Person> tradeList = new ArrayList<>();
-//        Person person6 = new Person("6", new BigDecimal("160"));
-//        // Person person7 = new Person("7", new BigDecimal("90"));
-//
-//        tradeList.add(person6);
-//        // tradeList.add(person7);
-//
-//        if (tradeList.size() == 0) {
-//            for (Person item : ourList) {
-//                System.out.println("单边记账: id " + item.getId() + " value =>" + item.getValue());
-//            }
-//        }
-//
-//        if (ourList.size() == 1) {
-//            // 交易双方各一条元素
-//            if (ourList.size() == tradeList.size()) {
-//                BigDecimal our = ourList.get(0).getValue();
-//                BigDecimal trade = tradeList.get(0).getValue();
-//                int result = our.compareTo(trade);
-//                if (result == 0) {
-//                    System.out.println("相等抵消" + ourList.get(0).getId() + ourList.get(0).getValue());
-//                } else if (result == -1) {
-//                    System.out.println("资产抵小" + trade.subtract(our));
-//                } else {
-//                    System.out.println("负债抵小" + our.subtract(trade));
-//                }
-//            }
-//
-//
-//        }
-//
-//        if (ourList.size() > 1) {
-//            if (ourList.size() > tradeList.size()) {
-//                // 多对1
-//                if (tradeList.size() == 1) {
-//
-//                    Iterator<Person> iterator = ourList.iterator();
-//                    while (iterator.hasNext()) {
-//                        Person next = iterator.next();
-//                        if (next.getValue().compareTo(tradeList.get(0).getValue()) == 0) {
-//                            iterator.remove();
-//                            System.out.println("相等抵消" + next.getId() + " => " + next.getValue() + "交易对手: " + tradeList.get(0).getId() + " => " + tradeList.get(0).getValue());
-//                            tradeList.clear();
-//                            return;
-//                        }
-//                    }
-//
-//                    Iterator<Person> iterator2 = ourList.iterator();
-//                    while (iterator2.hasNext()) {
-//                        Person next = iterator2.next();
-//                        // 负债方有一条记录且与资产方的一条相匹配
-//                        if (next.getValue().compareTo(tradeList.get(0).getValue()) == 0) {
-//                            System.out.println("相等抵消" + next.getId() + " => " + next.getValue() + "交易对手: " + tradeList.get(0).getId() + " => " + tradeList.get(0).getValue());
-//                            iterator2.remove();
-//                        } else if (next.getValue().compareTo(tradeList.get(0).getValue()) == 1) {
-//                            // 资产方大
-//                            System.out.println("负债抵小" + "差额:" + next.getValue().subtract(tradeList.get(0).getValue()));
-//                            iterator2.remove();
-//                            break;
-//                        } else {
-//                            System.out.println("===多对一匹配==");
-//                            ourList = cacl(ourList, tradeList.get(0).getValue());
-//                            break;
-//                        }
-//                    }
-//                    // 未匹配的做单边记账
-//                    for (Person item : ourList) {
-//                        System.out.println("单边记账:" + item.getId() + " => " + item.getValue());
-//                    }
-//                }
-//                // 多对多
-//                else {
-//                    System.out.println("多对多, 资产方多于负债");
-//                }
-//            } else if (ourList.size() == tradeList.size()) {
-//                System.out.println("多对多, 个数一样");
-//            } else {
-//                System.out.println("负债方个数多");
-//            }
-//        }
-//
-//
-//    }
+        ourList.add(person1);
+        ourList.add(person2);
+        ourList.add(person3);
+        ourList.add(person4);
 
-    private static List<Person> cacl(List<Person> personList, BigDecimal target) {
-        // 5 4 3 2 1
-        BigDecimal sum = personList.get(0).getValue();
-        for (int i = 1; i < personList.size(); i++) {
-            sum = sum.add(personList.get(i).getValue());
-            if (sum.compareTo(target) == 0) {
-                System.out.println("匹配成功");
-                System.out.println("位置" + i);
-                for (int j = 0; j <= i; j++) {
-                    personList.remove(0);
-                }
-                return personList;
-            } else if (sum.compareTo(target) == 1) {
-                BigDecimal result = sum.subtract(target);
-                System.out.println("位置" + i + "数值" + result);
-                System.out.println("大于了相等");
-                for (int j = 0; j < i; j++) {
-                    personList.remove(0);
-                }
-                personList.get(0).setValue(result);
-                return personList;
-            } else {
-                if (i == personList.size() - 1) {
-                    System.out.println("全匹配玩,也没匹配上" + sum + "差额:" + target.subtract(sum));
-                    // 清空list
-                    personList.clear();
-                    return personList;
-                }
+        List<Person> tradeList = new ArrayList<>();
+        Person person6 = new Person("6", new BigDecimal("10"));
+        Person person7 = new Person("7", new BigDecimal("100"));
+        Person person8 = new Person("8", new BigDecimal("30"));
+        Person person9 = new Person("9", new BigDecimal("40"));
+        Person person10 = new Person("10", new BigDecimal("10"));
+        Person person11 = new Person("11", new BigDecimal("10"));
+        Person person12 = new Person("12", new BigDecimal("30"));
+
+        tradeList.add(person6);
+        tradeList.add(person7);
+        tradeList.add(person8);
+        tradeList.add(person9);
+        tradeList.add(person10);
+        tradeList.add(person11);
+        tradeList.add(person12);
+
+        if (tradeList.size() == 0) {
+            for (Person item : ourList) {
+                System.out.println("单边记账id  " + item.getId() + "money " + item.getValue());
             }
+            return;
         }
-        return personList;
+
+        if (tradeList.size() == 1) {
+            System.out.println("抵小id  " + ourList.get(0).getId() + "money 差额 " + ourList.get(0).getValue().subtract(tradeList.get(0).getValue()).toString());
+            for (int i = 1; i < ourList.size(); i++) {
+                System.out.println("单边记账id  " + ourList.get(i).getId() + "money " + ourList.get(i).getValue());
+            }
+            return;
+        }
+
+        // 一对一相等匹配
+        cal1(ourList, tradeList);
+        // 一对多相等匹配
+        cal2(ourList, tradeList);
+        // 一对多抵消匹配
+        cal3(ourList, tradeList);
     }
 
-    public static void main(String[] args) {
-
-        List<String> strings = TestPro.groupHandler(new String[]{"1-4", "2-3", "3-2", "4-1.1", "5-2.9", "6-1", "7-3"});
-        String num = "5.00";
-        String result = "";
-        for (String item : strings) {
-            if (num.equals(item.substring(item.lastIndexOf("-") + 1))) {
-                result = item.substring(0, item.lastIndexOf("-"));
-                break;
+    // 一对一相等匹配
+    public static Map<String, List<Person>> cal1(List<Person> ourList, List<Person> tradeList) {
+        Iterator<Person> ourIterator = ourList.iterator();
+        while (ourIterator.hasNext()) {
+            Person ourObj = ourIterator.next();
+            Iterator<Person> tradeIterator = tradeList.iterator();
+            while (tradeIterator.hasNext()) {
+                Person tradeObj = tradeIterator.next();
+                if (ourObj.getValue().compareTo(tradeObj.getValue()) == 0) {
+                    ourIterator.remove();
+                    tradeIterator.remove();
+                    System.out.println("一对一 本方id: " + ourObj.getId() + "对方id:" + tradeObj.getId());
+                    break;
+                }
             }
         }
-        if (!result.equals("")) {
-            System.out.println("找到了" + result);
-            Iterator<String> iterator = strings.iterator();
-            while (iterator.hasNext()) {
-                String temp = iterator.next();
-                String idStr = temp.substring(0, temp.lastIndexOf("-"));
-                String[] strArr = result.split("-");
-                for (int i = 0; i < strArr.length; i++) {
-                    if (idStr.contains(strArr[i])) {
-                        //System.out.println(idStr);
-                        iterator.remove();
-                        break;
+
+        Map<String, List<Person>> map = new HashMap<>();
+        map.put("ourList", ourList);
+        map.put("tradeList", tradeList);
+
+        return map;
+    }
+
+    // 一对多组合相等匹配
+    public static Map<String, List<Person>> cal2(List<Person> ourList, List<Person> tradeList) {
+        List<String> orderList = groupHandler(tradeList);
+        Map<BigDecimal, List<String>> treeMap = new TreeMap<>(new Comparator<BigDecimal>() {
+            @Override
+            public int compare(BigDecimal o1, BigDecimal o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        for (String item : orderList) {
+            BigDecimal key = new BigDecimal(item.substring(item.lastIndexOf("-") + 1));
+            String value = item.substring(0, item.lastIndexOf("-"));
+            if (!treeMap.containsKey(key)) {
+                treeMap.put(key, new ArrayList<>());
+            }
+            treeMap.get(key).add(value);
+        }
+
+        Iterator<Person> ourIterator = ourList.iterator();
+        while (ourIterator.hasNext()) {
+            Person ourObj = ourIterator.next();
+            Iterator<BigDecimal> mapIterator1 = treeMap.keySet().iterator();
+            while (mapIterator1.hasNext()) {
+                {
+                    BigDecimal temp = mapIterator1.next();
+
+                    if (ourObj.getValue().compareTo(temp) == 0) {
+                        System.out.println("本方id: " + ourObj.getId() + "对方:id " + treeMap.get(temp).get(0));
+                        // 移除本方相关id
+                        ourIterator.remove();
+
+                        String[] tradeIdArr = treeMap.get(temp).get(0).split("-");
+
+                        // 移除对方
+                        for (int i = 0; i < tradeIdArr.length; i++) {
+                            // 移除treemap中匹配的
+                            List<String> valueList = treeMap.get(temp);
+
+                            Iterator<String> valueIterator = valueList.iterator();
+                            while (valueIterator.hasNext()) {
+                                String tempValue = valueIterator.next();
+                                if (tempValue.contains(tradeIdArr[i])) {
+                                    valueIterator.remove();
+                                }
+                            }
+                            Map<BigDecimal, List<String>> newMap = new TreeMap<>();
+                            newMap.put(ourObj.getValue(), valueList);
+                            treeMap = newMap;
+                            // 移除对方id
+                            Iterator<Person> tradeIterator = tradeList.iterator();
+                            while (tradeIterator.hasNext()) {
+                                Person tradeObj = tradeIterator.next();
+                                if (tradeObj.getId().equals(tradeIdArr[i])) {
+                                    tradeIterator.remove();
+                                }
+                            }
+                        }
                     }
                 }
             }
+        }
+        Map<String, List<Person>> map = new HashMap<>();
+        map.put("ourList", ourList);
+        map.put("tradeList", tradeList);
+
+        return map;
+    }
+
+    // 一对多抵消匹配
+    public static void cal3(List<Person> ourList, List<Person> tradeList) {
+        List<String> orderList = groupHandler(tradeList);
+        Map<BigDecimal, List<String>> treeMap = new TreeMap<>(new Comparator<BigDecimal>() {
+            @Override
+            public int compare(BigDecimal o1, BigDecimal o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        for (String item : orderList) {
+            BigDecimal key = new BigDecimal(item.substring(item.lastIndexOf("-") + 1));
+            String value = item.substring(0, item.lastIndexOf("-"));
+            if (!treeMap.containsKey(key)) {
+                treeMap.put(key, new ArrayList<>());
+            }
+            treeMap.get(key).add(value);
+        }
+
+        Iterator<Person> ourIterator = ourList.iterator();
+
+        while (ourIterator.hasNext()) {
+            Person ourPerson = ourIterator.next();
+
+            Map<String, Object> resultMap = calNearNum(treeMap, ourPerson.getValue());
+
+            BigDecimal money = (BigDecimal) resultMap.get("money");
+            List<String> matchList = (List<String>) resultMap.get("matchId");
+            String matchId = matchList.get(0);
+
+            String[] matchIdArr = matchId.split("-");
+
+            for (int i = 0; i < matchIdArr.length; i++) {
+                Iterator<Person> iterator = tradeList.iterator();
+                while (iterator.hasNext()) {
+                    if (iterator.next().getId().equals(matchIdArr[i])) {
+                        iterator.remove();
+                    }
+                }
+            }
+            System.out.println("借方: " + ourPerson.getId() + " 金额 " + ourPerson.getValue() + " 贷方 " + matchId + "  金额" + money + " 差额 " + ourPerson.getValue().subtract(money).toString());
+            ourIterator.remove();
+            if (tradeList.size() == 0) {
+                break;
+            }
+        }
+
+        for (Person item : ourList) {
+            System.out.println("单边记账id  " + item.getId() + "money " + item.getValue());
         }
 
     }
 
     /**
+     * @param treeMap
+     * @param nearNum 求最接近的值
+     */
+    public static Map<String, Object> calNearNum(Map<BigDecimal, List<String>> treeMap, BigDecimal nearNum) {
+
+        BigDecimal firstNum = (BigDecimal) (treeMap.keySet()).toArray()[0];
+
+        // 差值实始化
+        BigDecimal diffNum = firstNum.subtract(nearNum).abs();
+        // 最终结果
+        BigDecimal result = null;
+        List<String> matchId = new ArrayList<>();
+        for (Map.Entry<BigDecimal, List<String>> entry : treeMap.entrySet()) {
+            BigDecimal diffNumTemp = entry.getKey().subtract(nearNum).abs();
+            if (diffNumTemp.compareTo(diffNum) == -1) {
+                diffNum = diffNumTemp;
+                result = entry.getKey();
+                matchId = entry.getValue();
+            }
+        }
+
+        if (result == null) {
+            result = firstNum;
+            matchId = treeMap.get(result);
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("money", result);
+        map.put("matchId", matchId);
+        return map;
+    }
+
+    /**
      * 排列组合算法
      *
-     * @param params
      * @return
      */
-    public static List<String> groupHandler(String[] params) {
+    public static List<String> groupHandler(List<Person> tradeList) {
+        // id-金额
         // String[] mn=new String[] {"1-4","2-3","3-2", "4-1.1","5-2.9","6-1","7-3"};
+        List<String> params = new ArrayList<>();
+        for (Person item : tradeList) {
+            params.add(item.getId() + "-" + item.getValue());
+        }
 
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
         List<String> newlist = new ArrayList<String>();
         List<String> latelist = new ArrayList<String>();
-        latelist.add(params[0]);
+        latelist.add(params.get(0));
         //1,2,3,4,5,7,11,13,20
         List<String> tmplist = new ArrayList<String>();
 
         List<String> metalist = new ArrayList<String>();
-        for (int i = 0; i <= params.length - 1; i++) {
+        for (int i = 0; i <= params.size() - 1; i++) {
             BigDecimal tmp = BigDecimal.ZERO;
-            String[] mn2 = params[i].split("-");
+            String[] mn2 = params.get(i).split("-");
             List<String> tmplist1 = new ArrayList<String>();//用来保存中间计算的结果
-            metalist.add(params[i]);//用来保存原始数据参与过计算的
+            metalist.add(params.get(i));//用来保存原始数据参与过计算的
             tmplist.addAll(tmplist1);
             if (i == 0) {
                 continue;
@@ -227,10 +291,8 @@ public class TestPro {
                 }
                 for (String ss : metalist) {//与元数据进行加和
                     String[] ssary = ss.split("-");
-                    if (!ss.substring(0, ss.lastIndexOf("-")).equals(params[i].substring(0, params[i].lastIndexOf("-")))) {
+                    if (!ss.substring(0, ss.lastIndexOf("-")).equals(params.get(i).substring(0, params.get(i).lastIndexOf("-")))) {
                         tmp = new BigDecimal(mn2[mn2.length - 1]).add(new BigDecimal(ssary[ssary.length - 1])).setScale(2);
-                        //+ Double.parseDouble(ssary[ssary.length - 1]);
-
                         StringBuilder sbd3 = new StringBuilder();
                         for (int k = 0; k < ssary.length - 1; k++) {
                             sbd3.append(ssary[k]);
@@ -257,94 +319,4 @@ public class TestPro {
 
         return newlist;
     }
-
-
-    // 1对1 匹配
-    //  A - B 资产
-    //  1       70
-
-    // B - A 负债
-    //  1        70
-
-    // 1 对1 不匹配
-
-    //  A - B 资产
-    //  1       70
-
-    // B - A 负债
-    //  1        60
-
-    // 多对一
-    //  A - B 资产
-    //  1       120
-    //  1       70
-    //  1       60
-    //  1       50
-
-    // B - A 负债
-    // 1        70
-
-    // 多对一
-    //  A - B 资产
-    //  1       120
-    //  1       70
-    //  1       60
-    //  1       50
-
-    // B - A 负债
-    // 1        500
-
-    // 多对1 非全匹配
-    //  A - B
-    //  1       120
-    //  1       70
-    //  1       60
-    //  1       50
-
-    // B - A
-    // 1        90
-
-    // 多对1, 存在匹配项目
-    //  A - B
-    //  1       120
-    //  1       70
-    //  1       60
-    //  1       50
-
-    // B - A
-    // 1        50
-    // 1 75
-    
-     /**
-     *
-     * @param treeMap
-     * @param nearNum 需要接近的值
-     */
-    public static void caclNearNum(Map<BigDecimal, List<String>> treeMap, BigDecimal nearNum) {
-
-        BigDecimal firstNum = (BigDecimal) (treeMap.keySet()).toArray()[0];
-
-        // 差值实始化
-        BigDecimal diffNum = firstNum.subtract(nearNum).abs();
-        // 最终结果
-        BigDecimal result = null;
-        List<String> matchId = new ArrayList<>();
-        for (Map.Entry<BigDecimal, List<String>> entry : treeMap.entrySet()) {
-            BigDecimal diffNumTemp = entry.getKey().subtract(nearNum).abs();
-            if (diffNumTemp.compareTo(diffNum) == -1) {
-                diffNum = diffNumTemp;
-                result = entry.getKey();
-                matchId = entry.getValue();
-            }
-        }
-
-        if (result == null) {
-            result = firstNum;
-            matchId = treeMap.get(result);
-        }
-
-        System.out.println(result.toString() + " id " + matchId.get(0));
-
-    }
-    
 }
