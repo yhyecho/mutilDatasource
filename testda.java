@@ -9,24 +9,22 @@ import java.util.*;
 public class TestPro2 {
     public static void main(String[] args) {
         List<Person> ourList = new ArrayList<>();
-        Person person1 = new Person("1", new BigDecimal("100.00"));
-        Person person2 = new Person("2", new BigDecimal("80.00"));
-        Person person3 = new Person("3", new BigDecimal("87.00"));
-        Person person4 = new Person("4", new BigDecimal("60.00"));
+        Person person1 = new Person("1", new BigDecimal("100.00")); // 7 - 100
+        Person person2 = new Person("2", new BigDecimal("80.00")); // 9 6 8 80
+        Person person3 = new Person("3", new BigDecimal("60.00")); // 87
 
         ourList.add(person1);
         ourList.add(person2);
         ourList.add(person3);
-        ourList.add(person4);
 
         List<Person> tradeList = new ArrayList<>();
-        Person person6 = new Person("6", new BigDecimal("10"));
-        Person person7 = new Person("7", new BigDecimal("100"));
-        Person person8 = new Person("8", new BigDecimal("30"));
-        Person person9 = new Person("9", new BigDecimal("40"));
-        Person person10 = new Person("10", new BigDecimal("10"));
-        Person person11 = new Person("11", new BigDecimal("10"));
-        Person person12 = new Person("12", new BigDecimal("30"));
+        Person person6 = new Person("4", new BigDecimal("10")); // 2 10 +
+        Person person7 = new Person("5", new BigDecimal("100")); // 1 100
+        Person person8 = new Person("6", new BigDecimal("30")); // 2 30
+        Person person9 = new Person("7", new BigDecimal("40")); // 2 40
+        Person person10 = new Person("8", new BigDecimal("10")); // 10 + 120
+        Person person11 = new Person("9", new BigDecimal("10")); //
+        Person person12 = new Person("10", new BigDecimal("30")); // 90
 
         tradeList.add(person6);
         tradeList.add(person7);
@@ -55,7 +53,7 @@ public class TestPro2 {
         cal1(ourList, tradeList);
         // 一对多相等匹配
         cal2(ourList, tradeList);
-        // 一对多抵消匹配
+        // 一对多抵小匹配
         cal3(ourList, tradeList);
     }
 
@@ -172,33 +170,64 @@ public class TestPro2 {
         Iterator<Person> ourIterator = ourList.iterator();
 
         while (ourIterator.hasNext()) {
-            Person ourPerson = ourIterator.next();
 
+            Person ourPerson = ourIterator.next();
             Map<String, Object> resultMap = calNearNum(treeMap, ourPerson.getValue());
 
             BigDecimal money = (BigDecimal) resultMap.get("money");
             List<String> matchList = (List<String>) resultMap.get("matchId");
-            String matchId = matchList.get(0);
-
-            String[] matchIdArr = matchId.split("-");
-
-            for (int i = 0; i < matchIdArr.length; i++) {
-                Iterator<Person> iterator = tradeList.iterator();
-                while (iterator.hasNext()) {
-                    if (iterator.next().getId().equals(matchIdArr[i])) {
-                        iterator.remove();
-                    }
-                }
+            if (matchList.size() == 0) {
+                continue;
             }
+            String matchId = matchList.get(0);
+            String[] matchIdArr = matchId.split("-");
             System.out.println("借方: " + ourPerson.getId() + " 金额 " + ourPerson.getValue() + " 贷方 " + matchId + "  金额" + money + " 差额 " + ourPerson.getValue().subtract(money).toString());
             ourIterator.remove();
             if (tradeList.size() == 0) {
                 break;
             }
+            Iterator<BigDecimal> mapIterator = treeMap.keySet().iterator();
+
+            while (mapIterator.hasNext()) {
+                BigDecimal temp = mapIterator.next();
+                List<String> valueList = treeMap.get(temp);
+                if (valueList == null) {
+                    break;
+                }
+                for (int i = 0; i < matchIdArr.length; i++) {
+                    Iterator<String> valueIterator = valueList.iterator();
+                    while (valueIterator.hasNext()) {
+                        String tempValue = valueIterator.next();
+                        if (tempValue.contains(matchIdArr[i])) {
+                            valueIterator.remove();
+                        }
+                    }
+                    Map<BigDecimal, List<String>> newMap = new TreeMap<>();
+                    newMap.put(ourPerson.getValue(), valueList);
+                    treeMap = newMap;
+
+                    Iterator<Person> iterator = tradeList.iterator();
+                    while (iterator.hasNext()) {
+                        if (iterator.next().getId().equals(matchIdArr[i])) {
+                            iterator.remove();
+                        }
+                    }
+                }
+
+            }
+
         }
 
-        for (Person item : ourList) {
-            System.out.println("单边记账id  " + item.getId() + "money " + item.getValue());
+        if (tradeList.size() != 0 && ourList.size() > 0) {
+            cal3(ourList, tradeList);
+        } else {
+            for (Person item : ourList) {
+                System.out.println("借方单边记账id  " + item.getId() + "money " + item.getValue());
+            }
+
+            for (Person item : tradeList) {
+                System.out.println("贷方单边记账id  " + item.getId() + "money " + item.getValue());
+            }
         }
 
     }
@@ -209,7 +238,8 @@ public class TestPro2 {
      */
     public static Map<String, Object> calNearNum(Map<BigDecimal, List<String>> treeMap, BigDecimal nearNum) {
 
-        BigDecimal firstNum = (BigDecimal) (treeMap.keySet()).toArray()[0];
+        // BigDecimal firstNum = (BigDecimal) (treeMap.keySet()).toArray()[0];
+        BigDecimal firstNum = treeMap.keySet().iterator().next();
 
         // 差值实始化
         BigDecimal diffNum = firstNum.subtract(nearNum).abs();
