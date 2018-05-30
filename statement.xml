@@ -1,0 +1,81 @@
+<!-- 内部对账一对一相等抵消 -->
+	<statement>
+		<id>QUERY_ONE_TO_ONE_CHECK</id>
+		<content>
+			SELECT
+			a.DTL_ID    AS a_id,
+			a.ACG_YR    AS a_year,
+			a.ACG_MO   AS a_month,
+			a.CORP_CD   AS a_corpcd,
+			a.CORP_NM   AS a_corpname,
+			a.CST_CD    AS a_cstcd,
+			a.CST_NM    AS a_cstname,
+			a.SBJ_CD    AS a_sbjcd,
+			a.SBJ_NM    AS a_sbjname,
+			a.SBJ_LVL   AS a_sbjlvl,
+			a.SBJ_TP_CD AS a_sbjtpcd,
+			a.SBJ_TP_NM AS a_sbjtpname,
+			a.AMT_EOP   AS a_money,
+			a.MTCH_IND  AS a_matchid,
+			b.DTL_ID    AS b_id,
+			b.ACG_YR    AS b_year,
+			b.ACG_MO   AS b_month,
+			b.CORP_CD   AS b_corpcd,
+			b.CORP_NM   AS b_corpname,
+			b.CST_CD    AS b_cstcd,
+			b.CST_NM    AS b_cstname,
+			b.SBJ_CD    AS b_sbjcd,
+			b.SBJ_NM    AS b_sbjname,
+			b.SBJ_LVL   AS b_sbjlvl,
+			b.SBJ_TP_CD AS b_sbjtpcd,
+			b.SBJ_TP_NM AS b_sbjtpname,
+			b.AMT_EOP   AS b_money,
+			b.MTCH_IND  AS b_matchid
+			FROM
+			(
+			SELECT
+			*
+			FROM
+			KPMG_CHKACT_SRCDTL
+			WHERE
+			SBJ_TP_CD='01' AND MTCH_IND = 0) a
+			JOIN
+			(
+			SELECT
+			*
+			FROM
+			KPMG_CHKACT_SRCDTL
+			WHERE
+			SBJ_TP_CD='02' AND MTCH_IND = 0) b
+			ON
+			a.CORP_NM=b.CST_NM
+			AND a.CST_NM=b.CORP_NM
+			AND a.ACG_YR=b.ACG_YR
+			AND a.ACG_MO=b.ACG_MO
+			AND a.AMT_EOP = b.AMT_EOP
+		</content>
+	</statement>
+
+	<statement>
+		<id>INSERT_BTCH</id>
+		<content>INSERT INTO KPMG_CHKACT_BTCH (MTCH_BTCH_ID,MTCH_TP_NM,AMT_EOP,AMT_OFST) VALUES ('#{mtchBtchId}','#{mtchTpNm}',#{amtEop},#{amtOfst})</content>
+	</statement>
+
+	<statement>
+		<id>INSERT_SELF</id>
+		<content>INSERT INTO KPMG_CHKACT_SELFPRT (CHK_ID,ACG_YR,ACG_MO,CORP_CD,CORP_NM,CST_CD,CST_NM,SBJ_CD,SBJ_NM,SBJ_LVL,SBJ_TP_CD,SBJ_TP_NM,AMT_EOP,AMT_OFST,MTCH_TP_NM,MTCH_RMRK,MTCH_BTCH_ID) VALUES (
+			'#{chkId}','#{acgYr}','#{acgMo}','#{corpCd}','#{corpNm}','#{cstCd}','#{cstNm}','#{sbjCd}','#{sbjNm}',#{sbjLvl},'#{sbjTpCd}','#{sbjTpNm}',#{amtEop},#{amtOfst},'#{mtchTpNm}','#{mtchRmrk}','#{mtchBtchId}')
+		</content>
+	</statement>
+
+	<statement>
+		<id>INSERT_TRADE</id>
+		<content>INSERT INTO KPMG_CHKACT_CNTRPRT (CHK_ID,ACG_YR,ACG_MO,CORP_CD,CORP_NM,CST_CD,CST_NM,SBJ_CD,SBJ_NM,SBJ_LVL,SBJ_TP_CD,SBJ_TP_NM,AMT_EOP,AMT_OFST,MTCH_TP_NM,MTCH_RMRK,MTCH_BTCH_ID) VALUES (
+			'#{chkId}','#{acgYr}','#{acgMo}','#{corpCd}','#{corpNm}','#{cstCd}','#{cstNm}','#{sbjCd}','#{sbjNm}',#{sbjLvl},'#{sbjTpCd}','#{sbjTpNm}',#{amtEop},#{amtOfst},'#{mtchTpNm}','#{mtchRmrk}','#{mtchBtchId}')
+		</content>
+	</statement>
+
+	<statement>
+		<id>UPDATE_DETAIL</id>
+		<content>UPDATE KPMG_CHKACT_SRCDTL SET MTCH_IND = 1 WHERE DTL_ID = '#{dtlId}'</content>
+	</statement>
