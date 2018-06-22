@@ -15,17 +15,21 @@ public class DynamicServciceImpl implements DynamicServcice {
     @Autowired
     private DynamicDSMapper dynamicDSMapper;
 
+
     @DS()
+    @Override
     public Integer ds1() {
         return dynamicDSMapper.queryJournal();
     }
 
     @DS(name = "logic")
+    @Override
     public String ds2() {
         return dynamicDSMapper.queryUser();
     }
 
     @DS(name = "dao")
+    @Override
     public List<Object> ds3() {
         return dynamicDSMapper.queryType();
     }
